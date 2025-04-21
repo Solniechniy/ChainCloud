@@ -1,10 +1,10 @@
 import { StyleSheet, ScrollView, View, Switch, Platform } from "react-native";
 import { useState } from "react";
 import React, { ReactNode } from "react";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 interface SettingsSectionProps {
   title: string;
@@ -25,8 +25,6 @@ interface SettingsSwitchItemProps {
 }
 
 export default function SettingsScreen() {
-  const colorScheme = useColorScheme();
-
   // Storage settings
   const [maxStorage, setMaxStorage] = useState(10); // GB
   const [allowMobileData, setAllowMobileData] = useState(false);
@@ -43,11 +41,8 @@ export default function SettingsScreen() {
   const [autoWithdraw, setAutoWithdraw] = useState(false);
 
   return (
-    <ThemedView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <ThemedText type="title" style={styles.header}>
-          Settings
-        </ThemedText>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ThemedView style={styles.container}>
 
         <SettingsSection title="Storage Settings">
           <SettingsItem
@@ -132,17 +127,22 @@ export default function SettingsScreen() {
             description="ChainCloud network status"
           />
         </SettingsSection>
-      </ScrollView>
-    </ThemedView>
+      </ThemedView>
+    </ScrollView>
   );
 }
 
 function SettingsSection({ title, children }: SettingsSectionProps) {
   return (
-    <ThemedView style={styles.section}>
-      <ThemedText type="subtitle">{title}</ThemedText>
-      <ThemedView style={styles.sectionContent}>{children}</ThemedView>
-    </ThemedView>
+    <>
+      <ThemedText type="subtitle" style={styles.sectionTitle}>{title}</ThemedText>
+      <LinearGradient
+        colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+        style={styles.section}
+      >
+        <ThemedView style={styles.sectionContent}>{children}</ThemedView>
+      </LinearGradient>
+    </>
   );
 }
 
@@ -189,34 +189,53 @@ function SettingsSwitchItem({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
+    marginBottom: 56+24,
   },
   scrollContent: {
-    padding: 20,
+    paddingHorizontal: 16,
     paddingTop: 60,
   },
-  header: {
-    marginBottom: 20,
-  },
   section: {
-    marginBottom: 20,
+    padding: 16,
+    marginBottom: 24,
+    borderRadius: 20,
+    shadowColor: '#3a86ff',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   sectionContent: {
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "rgba(58, 134, 255, 0.05)",
-    marginTop: 8,
+    borderRadius: 16,
+    backgroundColor: 'transparent',
+  },
+  sectionTitle: {
+    marginBottom: 16,
+    marginLeft: 8,
+    fontSize: 22,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   settingItem: {
-    marginBottom: 16,
+    backgroundColor: "transparent",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(58, 134, 255, 0.1)',
   },
   settingMain: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
   },
   description: {
-    fontSize: 12,
-    opacity: 0.7,
+    fontSize: 13,
+    color: '#666666',
+    lineHeight: 18,
+    marginTop: 4,
   },
 });

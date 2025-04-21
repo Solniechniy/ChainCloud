@@ -1,8 +1,9 @@
-import { StyleSheet, Platform, View, Image } from "react-native";
+import { StyleSheet, View, Image, ScrollView, Dimensions } from "react-native";
 import { useState, useEffect } from "react";
 import * as Battery from "expo-battery";
 import * as FileSystem from "expo-file-system";
 import * as Cellular from "expo-cellular";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -97,45 +98,61 @@ export default function HomeScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#3a86ff", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          style={styles.headerImage}
-          source={require("@/assets/images/icon.png")}
-        />
+      headerContainer={
+        <View style={styles.headerContainer}>
+          <LinearGradient
+            colors={['rgba(58, 134, 255, 0.8)', 'rgba(58, 134, 255, 0.4)']}
+            style={styles.headerGradient}
+          >
+            <View style={styles.headerContent}>
+              <ThemedText type="title" lightColor="#fff" darkColor="#000" style={styles.appName}>ChainCloud</ThemedText>
+              <ThemedText type="default" lightColor="#fff" darkColor="#000" style={styles.appSubtitle}>Decentralized Storage</ThemedText>
+            </View>
+            <Image
+              style={styles.headerImage}
+              source={require("@/assets/images/chain-cloud.png")}
+            />
+          </LinearGradient>
+        </View>
       }
     >
-      {/* Earnings Section */}
-      <ThemedView style={styles.section}>
-        <ThemedText type="title">ChainCloud Node</ThemedText>
-        <ThemedText type="subtitle">Earnings</ThemedText>
-        <ThemedView style={styles.earningsCard}>
-          <View style={styles.earningItem}>
-            <ThemedText type="defaultSemiBold">Total Earned</ThemedText>
-            <ThemedText type="title">
-              ${earnings.totalEarned.toFixed(2)}
-            </ThemedText>
-          </View>
-          <View style={styles.dividedSection}>
+      <ScrollView style={styles.scrollView}>
+        {/* Earnings Section */}
+        <ThemedView style={styles.section}>
+          <LinearGradient
+            colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+            style={styles.earningsCard}
+          >
             <View style={styles.earningItem}>
-              <ThemedText>Pending</ThemedText>
-              <ThemedText type="subtitle">
-                ${earnings.pendingPayout.toFixed(2)}
+              <ThemedText type="defaultSemiBold" style={styles.earningLabel}>Total Earned</ThemedText>
+              <ThemedText type="title" style={styles.earningValue}>
+                ${earnings.totalEarned.toFixed(2)}
               </ThemedText>
             </View>
-            <View style={styles.earningItem}>
-              <ThemedText>Weekly Avg</ThemedText>
-              <ThemedText type="subtitle">
-                ${earnings.weeklyAverage.toFixed(2)}
-              </ThemedText>
+            <View style={styles.dividedSection}>
+              <View style={styles.earningItem}>
+                <ThemedText style={styles.earningLabel}>Pending</ThemedText>
+                <ThemedText type="subtitle" style={styles.earningValue}>
+                  ${earnings.pendingPayout.toFixed(2)}
+                </ThemedText>
+              </View>
+              <View style={styles.earningItem}>
+                <ThemedText style={styles.earningLabel}>Weekly Avg</ThemedText>
+                <ThemedText type="subtitle" style={styles.earningValue}>
+                  ${earnings.weeklyAverage.toFixed(2)}
+                </ThemedText>
+              </View>
             </View>
-          </View>
+          </LinearGradient>
         </ThemedView>
-      </ThemedView>
 
       {/* System Status Section */}
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle">System Status</ThemedText>
-        <ThemedView style={styles.statusCard}>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>System Status</ThemedText>
+        <LinearGradient
+          colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+          style={styles.statusCard}
+        >
           <View style={styles.statusItem}>
             <View style={styles.statusIndicator}>
               <View
@@ -144,9 +161,9 @@ export default function HomeScreen() {
                   { backgroundColor: getStatusColor(systemStatus.operational) },
                 ]}
               />
-              <ThemedText>Operational</ThemedText>
+              <ThemedText style={styles.statusLabel}>Operational</ThemedText>
             </View>
-            <ThemedText>
+            <ThemedText style={styles.statusValue}>
               {systemStatus.operational ? "Active" : "Inactive"}
             </ThemedText>
           </View>
@@ -159,9 +176,9 @@ export default function HomeScreen() {
                   { backgroundColor: getStatusColor(batteryLevel > 20) },
                 ]}
               />
-              <ThemedText>Battery</ThemedText>
+              <ThemedText style={styles.statusLabel}>Battery</ThemedText>
             </View>
-            <ThemedText>{batteryLevel}%</ThemedText>
+            <ThemedText style={styles.statusValue}>{batteryLevel}%</ThemedText>
           </View>
 
           <View style={styles.statusItem}>
@@ -176,9 +193,9 @@ export default function HomeScreen() {
                   },
                 ]}
               />
-              <ThemedText>Network</ThemedText>
+              <ThemedText style={styles.statusLabel}>Network</ThemedText>
             </View>
-            <ThemedText>
+            <ThemedText style={styles.statusValue}>
               {systemStatus.networkConnection === "strong"
                 ? "Strong"
                 : "Moderate"}
@@ -197,84 +214,172 @@ export default function HomeScreen() {
                   },
                 ]}
               />
-              <ThemedText>Storage</ThemedText>
+              <ThemedText style={styles.statusLabel}>Storage</ThemedText>
             </View>
-            <ThemedText>
+            <ThemedText style={styles.statusValue}>
               {systemStatus.storageAvailable ? "Available" : "Limited"}
             </ThemedText>
           </View>
-        </ThemedView>
+        </LinearGradient>
       </ThemedView>
 
-      {/* Usage Statistics Section */}
-      <ThemedView style={styles.section}>
-        <ThemedText type="subtitle">Usage Statistics</ThemedText>
-        <ThemedView style={styles.usageCard}>
-          <ThemedText type="subtitle">Storage</ThemedText>
-          <View style={styles.statItem}>
-            <ThemedText>Used by ChainCloud:</ThemedText>
-            <ThemedText>
-              {usageStats.storageUsed} GB / {usageStats.totalStorage} GB
-            </ThemedText>
-          </View>
+        {/* Usage Statistics Section */}
+        <ThemedView style={styles.section}>
+          <ThemedText type="subtitle" style={styles.sectionTitle}>Usage Statistics</ThemedText>
+          <LinearGradient
+            colors={['rgba(58, 134, 255, 0.05)', 'rgba(58, 134, 255, 0.02)']}
+            style={styles.usageCard}
+          >
+            <View style={styles.usageSection}>
+              <ThemedText type="subtitle" style={styles.usageTitle}>Storage</ThemedText>
+              <View style={styles.statItem}>
+                <ThemedText style={styles.statLabel}>Used by ChainCloud:</ThemedText>
+                <ThemedText style={styles.statValue}>
+                  {usageStats.storageUsed} GB / {usageStats.totalStorage} GB
+                </ThemedText>
+              </View>
+            </View>
 
-          <ThemedText type="subtitle" style={styles.statHeader}>
-            Network
-          </ThemedText>
-          <View style={styles.statItem}>
-            <ThemedText>Data Uploaded:</ThemedText>
-            <ThemedText>{usageStats.networkUploaded} GB</ThemedText>
-          </View>
-          <View style={styles.statItem}>
-            <ThemedText>Data Downloaded:</ThemedText>
-            <ThemedText>{usageStats.networkDownloaded} GB</ThemedText>
-          </View>
+            <View style={styles.usageSection}>
+              <ThemedText type="subtitle" style={styles.usageTitle}>Network</ThemedText>
+              <View style={styles.statItem}>
+                <ThemedText style={styles.statLabel}>Data Uploaded:</ThemedText>
+                <ThemedText style={styles.statValue}>{usageStats.networkUploaded} GB</ThemedText>
+              </View>
+              <View style={styles.statItem}>
+                <ThemedText style={styles.statLabel}>Data Downloaded:</ThemedText>
+                <ThemedText style={styles.statValue}>{usageStats.networkDownloaded} GB</ThemedText>
+              </View>
+            </View>
 
-          <ThemedText type="subtitle" style={styles.statHeader}>
-            Node Activity
-          </ThemedText>
-          <View style={styles.statItem}>
-            <ThemedText>Active Hours:</ThemedText>
-            <ThemedText>{usageStats.activeHours} hours</ThemedText>
-          </View>
-          <View style={styles.statItem}>
-            <ThemedText>Data Served:</ThemedText>
-            <ThemedText>{usageStats.dataServed} GB</ThemedText>
-          </View>
+            <View style={styles.usageSection}>
+              <ThemedText type="subtitle" style={styles.usageTitle}>Node Activity</ThemedText>
+              <View style={styles.statItem}>
+                <ThemedText style={styles.statLabel}>Active Hours:</ThemedText>
+                <ThemedText style={styles.statValue}>{usageStats.activeHours} hours</ThemedText>
+              </View>
+              <View style={styles.statItem}>
+                <ThemedText style={styles.statLabel}>Data Served:</ThemedText>
+                <ThemedText style={styles.statValue}>{usageStats.dataServed} GB</ThemedText>
+              </View>
+            </View>
+          </LinearGradient>
         </ThemedView>
-      </ThemedView>
+      </ScrollView>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    marginBottom: 56,
+    paddingHorizontal: 16,
+  },
   section: {
     marginBottom: 24,
-    gap: 12,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 16,
+    marginLeft: 8,
+    letterSpacing: 0.5,
+  },
+  headerContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 120,
+  },
+  headerGradient: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  headerContent: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  appName: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 4,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  appSubtitle: {
+    fontSize: 16,
+    opacity: 0.9,
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 1,
+  },
+  headerImage: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
   },
   earningsCard: {
-    padding: 16,
-    borderRadius: 12,
+    marginTop: 24,
+    padding: 24,
+    borderRadius: 20,
     backgroundColor: "rgba(58, 134, 255, 0.1)",
-    gap: 16,
+    gap: 24,
+    shadowColor: "#3a86ff",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   earningItem: {
     alignItems: "center",
   },
+  earningLabel: {
+    fontSize: 14,
+    opacity: 0.8,
+    marginBottom: 8,
+    letterSpacing: 0.5,
+  },
+  earningValue: {
+    fontSize: 28,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
   dividedSection: {
     flexDirection: "row",
     justifyContent: "space-around",
+    borderTopWidth: 1,
+    borderTopColor: "rgba(58, 134, 255, 0.2)",
+    paddingTop: 20,
   },
   statusCard: {
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "rgba(58, 134, 255, 0.05)",
-    gap: 12,
+    padding: 24,
+    borderRadius: 20,
+    gap: 16,
+    shadowColor: "#3a86ff",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   statusItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(58, 134, 255, 0.1)",
   },
   statusIndicator: {
     flexDirection: "row",
@@ -286,26 +391,55 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
   },
+  statusLabel: {
+    fontSize: 14,
+    opacity: 0.8,
+    letterSpacing: 0.3,
+  },
+  statusValue: {
+    fontSize: 14,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+  },
   usageCard: {
-    padding: 16,
-    borderRadius: 12,
+    padding: 24,
+    borderRadius: 20,
     backgroundColor: "rgba(58, 134, 255, 0.05)",
+    gap: 24,
+    shadowColor: "#3a86ff",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  usageSection: {
+    gap: 16,
+  },
+  usageTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 12,
+    letterSpacing: 0.3,
   },
   statItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 4,
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(58, 134, 255, 0.1)",
   },
-  statHeader: {
-    marginTop: 16,
-    marginBottom: 4,
+  statLabel: {
+    fontSize: 14,
+    opacity: 0.8,
+    letterSpacing: 0.3,
   },
-  headerImage: {
-    height: 100,
-    width: 100,
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    resizeMode: "contain",
+  statValue: {
+    fontSize: 14,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 });
