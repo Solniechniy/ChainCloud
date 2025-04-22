@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   card: {
-    padding: 24,
+    padding: 16,
     borderRadius: 20,
     marginBottom: 24,
     shadowColor: '#3a86ff',
