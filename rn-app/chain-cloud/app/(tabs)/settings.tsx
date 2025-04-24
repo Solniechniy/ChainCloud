@@ -1,10 +1,11 @@
-import { StyleSheet, ScrollView, View, Switch, Platform } from "react-native";
+import { StyleSheet, ScrollView, View, Switch, Platform, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
 import React, { ReactNode } from "react";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useSolanaWallet } from "@/contexts/SolanaWalletContext";
 
 interface SettingsSectionProps {
   title: string;
@@ -24,9 +25,15 @@ interface SettingsSwitchItemProps {
   description?: string;
 }
 
-export default function SettingsScreen() {
-  const colorScheme = useColorScheme();
+interface SettingsButtonProps {
+  label: string;
+  onPress: () => void;
+  color?: string;
+  description?: string;
+}
 
+export default function SettingsScreen() {
+  const { publicKey, disconnect } = useSolanaWallet();
   // Storage settings
   const [maxStorage, setMaxStorage] = useState(10); // GB
   const [allowMobileData, setAllowMobileData] = useState(false);
@@ -36,18 +43,73 @@ export default function SettingsScreen() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   // Payment settings
-  const [walletAddress, setWalletAddress] = useState(
-    "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
-  );
+  const walletAddress = publicKey?.toBase58() || "-";
   const [minPayout, setMinPayout] = useState(25); // tokens
   const [autoWithdraw, setAutoWithdraw] = useState(false);
 
+  const handleDataManagement = () => {
+    Alert.alert(
+      "Data Management",
+      "What would you like to do?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete All Data", 
+          style: "destructive",
+          onPress: () => {
+            Alert.alert(
+              "Confirm Deletion",
+              "Are you sure you want to delete all local data? This action cannot be undone.",
+              [
+                { text: "Cancel", style: "cancel" },
+                { 
+                  text: "Delete", 
+                  style: "destructive",
+                  onPress: () => {
+                    // Add logic to delete all data
+                    Alert.alert("Success", "All data has been deleted.");
+                  }
+                }
+              ]
+            );
+          }
+        },
+        { 
+          text: "Upload Data", 
+          onPress: () => {
+            // Add logic to upload data
+            Alert.alert("Success", "Data upload started.");
+          }
+        }
+      ]
+    );
+  };
+
+  const handleDisconnectWallet = () => {
+    Alert.alert(
+      "Disconnect Wallet",
+      "Are you sure you want to disconnect your Solana wallet?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Disconnect", 
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await disconnect();
+              Alert.alert("Success", "Wallet disconnected successfully.");
+            } catch (error) {
+              Alert.alert("Error", "Failed to disconnect wallet.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
   return (
-    <ThemedView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <ThemedText type="title" style={styles.header}>
-          Settings
-        </ThemedText>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ThemedView style={styles.container}>
 
         <SettingsSection title="Storage Settings">
           <SettingsItem
@@ -76,6 +138,12 @@ export default function SettingsScreen() {
             onValueChange={setLowPowerMode}
             description="Reduce resource usage when battery is low"
           />
+          
+          <SettingsButton
+            label="Data Management"
+            onPress={handleDataManagement}
+            description="Delete all data or upload your data"
+          />
         </SettingsSection>
 
         <SettingsSection title="App Settings">
@@ -95,15 +163,6 @@ export default function SettingsScreen() {
         </SettingsSection>
 
         <SettingsSection title="Payment Settings">
-          <SettingsItem
-            label="Wallet Address"
-            value={
-              walletAddress.substring(0, 7) +
-              "..." +
-              walletAddress.substring(walletAddress.length - 5)
-            }
-            description="Where earnings will be sent"
-          />
 
           <SettingsItem
             label="Minimum Payout"
@@ -116,6 +175,22 @@ export default function SettingsScreen() {
             value={autoWithdraw}
             onValueChange={setAutoWithdraw}
             description="Automatically withdraw when minimum is reached"
+          />
+
+          <SettingsItem
+            label="Wallet Address"
+            value={
+              walletAddress.substring(0, 7) +
+              "..." +
+              walletAddress.substring(walletAddress.length - 5)
+            }
+            description="Where earnings will be sent"
+          />
+          
+          <SettingsButton
+            label="Disconnect Wallet"
+            onPress={handleDisconnectWallet}
+            color="#FF3B30"
           />
         </SettingsSection>
 
@@ -132,17 +207,22 @@ export default function SettingsScreen() {
             description="ChainCloud network status"
           />
         </SettingsSection>
-      </ScrollView>
-    </ThemedView>
+      </ThemedView>
+    </ScrollView>
   );
 }
 
 function SettingsSection({ title, children }: SettingsSectionProps) {
   return (
-    <ThemedView style={styles.section}>
-      <ThemedText type="subtitle">{title}</ThemedText>
-      <ThemedView style={styles.sectionContent}>{children}</ThemedView>
-    </ThemedView>
+    <>
+      <ThemedText type="subtitle" style={styles.sectionTitle}>{title}</ThemedText>
+      <LinearGradient
+        colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+        style={styles.section}
+      >
+        <ThemedView style={styles.sectionContent}>{children}</ThemedView>
+      </LinearGradient>
+    </>
   );
 }
 
@@ -186,37 +266,88 @@ function SettingsSwitchItem({
   );
 }
 
+function SettingsButton({
+  label,
+  onPress,
+  color = "#3a86ff",
+  description,
+}: SettingsButtonProps) {
+  return (
+    <ThemedView style={styles.settingItem}>
+      <TouchableOpacity 
+        style={[styles.button, { borderColor: color }]} 
+        onPress={onPress}
+        activeOpacity={0.7}
+      >
+        <ThemedText type="defaultSemiBold" style={{ color }}>
+          {label}
+        </ThemedText>
+      </TouchableOpacity>
+      {description && (
+        <ThemedText style={styles.description}>{description}</ThemedText>
+      )}
+    </ThemedView>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
+    marginBottom: 56+24,
   },
   scrollContent: {
-    padding: 20,
+    paddingHorizontal: 16,
     paddingTop: 60,
   },
-  header: {
-    marginBottom: 20,
-  },
   section: {
-    marginBottom: 20,
+    padding: 16,
+    marginBottom: 24,
+    borderRadius: 20,
+    shadowColor: '#3a86ff',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   sectionContent: {
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "rgba(58, 134, 255, 0.05)",
-    marginTop: 8,
+    borderRadius: 16,
+    backgroundColor: 'transparent',
+  },
+  sectionTitle: {
+    marginBottom: 16,
+    marginLeft: 8,
+    fontSize: 22,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   settingItem: {
-    marginBottom: 16,
+    backgroundColor: "transparent",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(58, 134, 255, 0.1)',
   },
   settingMain: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
   },
   description: {
-    fontSize: 12,
-    opacity: 0.7,
+    fontSize: 13,
+    color: '#666666',
+    lineHeight: 18,
+    marginTop: 4,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+    marginVertical: 8,
   },
 });

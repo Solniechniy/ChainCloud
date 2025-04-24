@@ -2,6 +2,7 @@ import { StyleSheet, ScrollView, View, Dimensions } from "react-native";
 import { useState, useEffect } from "react";
 import * as FileSystem from "expo-file-system";
 import { BarChart } from "react-native-gifted-charts";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -87,14 +88,14 @@ export default function StatsScreen() {
   }, [barColor]);
 
   return (
-    <ThemedView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <ThemedText type="title" style={styles.header}>
-          Node Statistics
-        </ThemedText>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ThemedView style={styles.container}>
 
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle">Weekly Earnings (in tokens)</ThemedText>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>Weekly Earnings (in tokens)</ThemedText>
+        <LinearGradient
+          colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+          style={styles.card}
+        >
           <View style={styles.chartContainer}>
             <BarChart
               data={weeklyEarnings}
@@ -113,10 +114,13 @@ export default function StatsScreen() {
               maxValue={15}
             />
           </View>
-        </ThemedView>
+        </LinearGradient>
 
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle">Storage Allocation (GB)</ThemedText>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>Storage Allocation (GB)</ThemedText>
+        <LinearGradient
+          colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+          style={styles.card}
+        >
           <View style={styles.chartContainer}>
             <BarChart
               data={storageData}
@@ -134,10 +138,13 @@ export default function StatsScreen() {
               noOfSections={5}
             />
           </View>
-        </ThemedView>
+        </LinearGradient>
 
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle">Network Activity (GB)</ThemedText>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>Network Activity (GB)</ThemedText>
+        <LinearGradient
+          colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+          style={styles.card}
+        >
           <View style={styles.chartContainer}>
             <BarChart
               data={networkActivity}
@@ -156,11 +163,13 @@ export default function StatsScreen() {
               maxValue={100}
             />
           </View>
-        </ThemedView>
+        </LinearGradient>
 
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle">Historical Performance</ThemedText>
-
+        <ThemedText type="subtitle" style={styles.sectionTitle}>Historical Performance</ThemedText>
+        <LinearGradient
+          colors={['rgba(58, 134, 255, 0.1)', 'rgba(58, 134, 255, 0.05)']}
+          style={styles.card}
+        >
           <View style={styles.statRow}>
             <View style={styles.statItem}>
               <ThemedText style={styles.statValue}>
@@ -209,49 +218,69 @@ export default function StatsScreen() {
               <ThemedText style={styles.statLabel}>Success Rate</ThemedText>
             </View>
           </View>
-        </ThemedView>
-      </ScrollView>
-    </ThemedView>
+        </LinearGradient>
+      </ThemedView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 56+24,
+    backgroundColor: 'transparent',
   },
   scrollContent: {
-    padding: 20,
+    paddingHorizontal: 16,
     paddingTop: 60,
   },
-  header: {
-    marginBottom: 20,
+  sectionTitle: {
+    marginBottom: 16,
+    marginLeft: 8,
+    fontSize: 22,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   card: {
     padding: 16,
-    borderRadius: 12,
-    backgroundColor: "rgba(58, 134, 255, 0.05)",
-    marginBottom: 20,
+    borderRadius: 20,
+    marginBottom: 24,
+    shadowColor: '#3a86ff',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   chartContainer: {
     alignItems: "center",
-    paddingVertical: 20,
+    paddingVertical: 16,
+    overflow: "hidden",
   },
   statRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 10,
+    marginVertical: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(58, 134, 255, 0.1)',
   },
   statItem: {
     width: "48%",
     alignItems: "center",
   },
   statValue: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 8,
+    letterSpacing: 0.5,
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: 14,
     textAlign: "center",
+    opacity: 0.8,
+    letterSpacing: 0.3,
   },
 });
