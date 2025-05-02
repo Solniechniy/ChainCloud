@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="10" width="180" height="180" rx="20" fill="#FFFFFF" stroke="#000000" stroke-opacity="0.2"/>
+    
+    <!-- Network blocks with connections -->
+    <rect x="20" y="80" width="80" height="40" rx="4" fill="#FFFFFF" stroke="#EEEEEE"/>
+    <text x="40" y="105" font-family="Arial" font-size="10" fill="#281D1B">Block #342121</text>
+    <circle cx="30" cy="100" r="8" stroke="#FF9D00" stroke-width="2" stroke-dasharray="2 2" fill="none"/>
+    
+    <rect x="110" y="80" width="80" height="40" rx="4" fill="#FFFFFF" stroke="#EEEEEE"/>
+    <text x="130" y="105" font-family="Arial" font-size="10" fill="#281D1B">Block #342122</text>
+    <circle cx="120" cy="100" r="8" stroke="#FF9D00" stroke-width="2" stroke-dasharray="2 2" fill="none"/>
+    
+    <!-- Connection arrows -->
+    <line x1="100" y1="100" x2="110" y2="100" stroke="#000000" stroke-opacity="0.3" stroke-width="1"/>
+    <path d="M104 96L110 100L104 104" fill="none" stroke="#000000" stroke-opacity="0.3" stroke-width="1"/>
+    
+    <!-- Status indicator -->
+    <circle cx="100" cy="140" r="30" fill="#FFE4DE"/>
+    <path d="M90 140L95 145L110 130" stroke="#FF5733" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="75" y="160" font-family="Arial" font-size="10" fill="#281D1B">Uptime 99.9%</text>
+</svg> 
