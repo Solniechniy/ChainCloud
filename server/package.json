@@ -1,0 +1,36 @@
+{
+  "name": "chaincloud-server",
+  "version": "1.0.0",
+  "description": "ChainCloud WebSocket server for distributed Solana data storage",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "lint": "eslint . --ext .ts",
+    "typeorm": "typeorm-ts-node-commonjs"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.13.0",
+    "mysql2": "^3.6.0",
+    "typeorm": "^0.3.17",
+    "redis": "^4.6.8",
+    "axios": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.5.6",
+    "@types/ws": "^8.5.5",
+    "@types/cors": "^2.8.13",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "eslint": "^8.48.0",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
+  }
+}

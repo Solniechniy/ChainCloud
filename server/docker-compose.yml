@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: chaincloud-server
+    restart: always
+    ports:
+      - "3000:3000" # HTTP API
+      - "8080:8080" # WebSocket
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=chaincloud
+      - DB_PASSWORD=chaincloud_password
+      - DB_NAME=chaincloud
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SOLANA_RPC_URL=https://api.devnet.solana.com
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./logs:/app/logs
+
+  db:
+    image: mysql:8
+    container_name: chaincloud-mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=chaincloud
+      - MYSQL_USER=chaincloud
+      - MYSQL_PASSWORD=chaincloud_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: chaincloud-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  redis_data:
