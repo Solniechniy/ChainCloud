@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import "./App.css";
 
 function App() {
@@ -58,12 +59,12 @@ function App() {
               <a href="#download" className="nav-link">
                 Download app
               </a>
-              <a href="#login" className="nav-link">
+              <Link to="/dashboard" className="nav-link">
                 Log in
-              </a>
-              <a href="#try" className="btn btn-outline">
+              </Link>
+              <Link to="/dashboard" className="btn btn-outline">
                 Try it free
-              </a>
+              </Link>
             </div>
           </nav>
 
@@ -86,12 +87,12 @@ function App() {
             <a href="#download" className="nav-link">
               Download app
             </a>
-            <a href="#login" className="nav-link">
+            <Link to="/dashboard" className="nav-link">
               Log in
-            </a>
-            <a href="#try" className="btn btn-outline">
+            </Link>
+            <Link to="/dashboard" className="btn btn-outline">
               Try it free
-            </a>
+            </Link>
           </div>
         </div>
       </header>

@@ -12,12 +12,11 @@ body {
   overflow-x: hidden;
   width: 100%;
 }
+
 main section:first-child {
-  background: linear-gradient(
-    180deg,
-    rgba(245, 223, 218, 0.17) 0%,
-    #eecec7 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(245, 223, 218, 0.17) 0%,
+      #eecec7 100%);
 }
 
 body {
@@ -149,11 +148,9 @@ body {
   right: -50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 87, 51, 0.1) 0%,
-    rgba(255, 251, 250, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(255, 87, 51, 0.1) 0%,
+      rgba(255, 251, 250, 0) 70%);
   z-index: -1;
 }
 
@@ -201,6 +198,7 @@ body {
   padding: 2rem;
   transition: transform 0.3s ease;
   min-height: 16rem;
+
   a {
     align-self: end;
   }
@@ -212,6 +210,7 @@ body {
   align-items: start;
 
   gap: 1rem;
+
   h3 {
     color: #000;
     font-family: "Space Grotesk";
@@ -236,19 +235,24 @@ body {
   font-size: 2.625rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 100%; /* 2.625rem */
+  line-height: 100%;
+  /* 2.625rem */
   letter-spacing: -0.105rem;
-  > img {
+
+  >img {
     width: 2.625rem;
     height: 2.625rem;
   }
 }
+
 .hero-card-second {
   grid-area: 2 / 1 / 3 / 3;
 }
+
 .hero-card-third {
   grid-area: 2 / 3 / 3 / 4;
 }
+
 .hero-card-fourth {
   grid-area: 3 / 1 / 4 / 4;
 }
@@ -271,11 +275,9 @@ body {
 /* Features Section */
 .features {
   padding: 5rem 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 87, 51, 0.05) 0%,
-    rgba(255, 251, 250, 0) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 87, 51, 0.05) 0%,
+      rgba(255, 251, 250, 0) 100%);
 }
 
 .features-header {
@@ -318,13 +320,15 @@ body {
   div:first-child {
     padding: 1rem 3rem;
   }
+
   h1 {
     color: #000;
     font-family: Nunito;
     font-size: 1.75rem;
     font-style: normal;
     font-weight: 700;
-    line-height: 2rem; /* 114.286% */
+    line-height: 2rem;
+    /* 114.286% */
     letter-spacing: -0.0175rem;
   }
 
@@ -334,14 +338,17 @@ body {
     font-size: 1.25rem;
     font-style: normal;
     font-weight: 300;
-    line-height: 1.5rem; /* 120% */
+    line-height: 1.5rem;
+    /* 120% */
   }
+
   img {
     width: 100%;
     height: 100%;
     object-fit: contain;
   }
 }
+
 .feature-card-access {
   overflow: hidden;
   color: #000;
@@ -350,8 +357,10 @@ body {
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 500;
-  line-height: 2rem; /* 133.333% */
+  line-height: 2rem;
+  /* 133.333% */
 }
+
 .feature-card:hover {
   transform: translateY(-5px);
 }
@@ -467,6 +476,7 @@ body {
   .container {
     padding: 0 1.5rem;
   }
+
   .feature-card {
     width: 100%;
   }
@@ -474,21 +484,107 @@ body {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 1.5rem;
+    padding: 0 1rem;
   }
 
-  .hero-cards,
-  .features-grid,
-  .steps-grid {
+  .hero {
+    padding: 3rem 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-cards {
+    padding: 1.5rem;
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 1rem;
+  }
+
+  .hero-card {
+    min-height: auto;
+    padding: 1.5rem;
+  }
+
+  .hero-card-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .hero-card-first {
+    grid-area: auto;
+    font-size: 2rem;
+  }
+
+  .hero-card-second,
+  .hero-card-third,
+  .hero-card-fourth {
+    grid-area: auto;
+  }
+
+  .features {
+    padding: 3rem 0;
+  }
+
+  .features-header {
+    margin-bottom: 2rem;
+  }
+
+  .features-header h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+
+  .features-header p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .features-grid {
+    padding: 1.5rem;
+    gap: 1rem;
   }
 
   .feature-card {
-    min-height: auto;
+    min-width: 100%;
+    padding: 1.5rem;
+  }
+
+  .feature-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .feature-card p {
+    font-size: 1rem;
+  }
+
+  .how-it-works {
+    padding: 3rem 0;
+  }
+
+  .how-it-works h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 2rem;
+  }
+
+  .step-card {
+    padding: 1.5rem;
+  }
+
+  .step-number {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .step-card p {
+    font-size: 1rem;
   }
 
   .mobile-menu-button {
     display: block;
+    padding: 0.5rem;
+    z-index: 1001;
   }
 
   .desktop-nav,
@@ -498,14 +594,15 @@ body {
 
   .mobile-menu {
     display: none;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     background: var(--background-primary);
-    padding: 1rem;
-    border-top: 1px solid rgba(40, 29, 27, 0.1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 5rem 1.5rem 1.5rem;
+    z-index: 1000;
+    overflow-y: auto;
   }
 
   .mobile-menu.active {
@@ -515,52 +612,82 @@ body {
   .mobile-menu .nav-links,
   .mobile-menu .header-buttons {
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     align-items: flex-start;
+  }
+
+  .mobile-menu .nav-link {
+    font-size: 1.25rem;
   }
 
   .mobile-menu .btn {
     width: 100%;
     text-align: center;
+    padding: 1rem;
   }
 
-  .hero h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-  }
-
-  .hero-cards {
-    gap: 1rem;
+  .footer {
+    padding: 2rem 0;
   }
 
   .footer-content {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 2rem;
   }
 
   .footer-brand {
-    grid-column: 1 / -1;
+    grid-column: auto;
+  }
+
+  .footer-column h4 {
+    margin-bottom: 1rem;
+  }
+
+  .footer-links {
+    gap: 0.75rem;
   }
 }
 
 @media (max-width: 480px) {
   .container {
-    padding: 0 1rem;
+    padding: 0 0.75rem;
+  }
+
+  .header {
+    padding: 0.75rem 0;
+  }
+
+  .logo-text {
+    font-size: 1.25rem;
   }
 
   .btn {
     width: 100%;
-    text-align: center;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
   }
 
-  .features-header {
-    text-align: center;
+  .hero {
+    padding: 2rem 0;
   }
 
-  .features-header br {
-    display: none;
+  .hero-cards {
+    padding: 1rem;
   }
 
-  .footer-content {
-    grid-template-columns: 1fr;
+  .hero-card {
+    padding: 1rem;
+  }
+
+  .features-grid {
+    padding: 1rem;
+  }
+
+  .feature-card {
+    padding: 1rem;
+  }
+
+  .step-card {
+    padding: 1rem;
   }
 }
