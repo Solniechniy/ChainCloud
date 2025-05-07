@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Switch, TouchableOpacity, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 export default function MiningScreen() {
   const [isMining, setIsMining] = useState(false);
-  const [cpuUsage, setCpuUsage] = useState(60); // percentage
-  const [networkSpeed, setNetworkSpeed] = useState(2.3); // Mb/s
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
+  const [activeServer, setActiveServer] = useState<string | null>(null);
   
   // Animation for the mining indicator
   const pulseValue = useSharedValue(1);
@@ -19,39 +20,41 @@ export default function MiningScreen() {
     };
   });
   
-  // Start pulsing animation when mining is active
-  React.useEffect(() => {
-    const pulse = () => {
-      pulseValue.value = withSpring(1.2, { damping: 2 });
-      setTimeout(() => {
-        pulseValue.value = withSpring(1, { damping: 2 });
-      }, 1000);
-    };
-    
-    let interval: NodeJS.Timeout;
-    if (isMining) {
-      pulse();
-      interval = setInterval(pulse, 2000);
-      
-      // Simulate fluctuating resources
-      const resourceInterval = setInterval(() => {
-        setCpuUsage(Math.floor(Math.random() * 20) + 50); // 50-70%
-        setNetworkSpeed(Number((Math.random() * 1.5 + 1.5).toFixed(1))); // 1.5-3.0 Mb/s
-      }, 5000);
-      
-      return () => {
-        clearInterval(interval);
-        clearInterval(resourceInterval);
-      };
+  // Simulate loading proxy servers
+  const loadProxyServers = async () => {
+    setIsConnecting(true);
+    try {
+      // Simulate API call to get proxy servers
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const servers = [
+        'proxy1.chaincloud.com',
+        'proxy2.chaincloud.com',
+        'proxy3.chaincloud.com'
+      ];
+      setConnectionStatus('connected');
+      setActiveServer(servers[0]);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to connect to proxy servers');
+      setConnectionStatus('disconnected');
+    } finally {
+      setIsConnecting(false);
     }
-    
-    return () => clearInterval(interval);
-  }, [isMining, pulseValue]);
-  
-  const toggleMining = () => {
+  };
+
+  // Handle mining toggle
+  const toggleMining = async () => {
+    if (!isMining) {
+      setIsConnecting(true);
+      setConnectionStatus('connecting');
+      await loadProxyServers();
+    } else {
+      setConnectionStatus('disconnected');
+      setActiveServer(null);
+    }
     setIsMining(!isMining);
   };
 
+  
   return (
     <LinearGradient
       colors={['rgba(247, 229, 225, 0.62)', 'rgba(238, 206, 199, 1)']}
@@ -72,16 +75,23 @@ export default function MiningScreen() {
               <View style={styles.miningLabelContainer}>
                 <Text style={styles.miningLabel}>Mining Status</Text>
                 <View style={styles.statusRow}>
-                  {isMining && (
+                  {isMining && connectionStatus === 'connected' && (
                     <Animated.View style={[styles.pulseCircle, pulseStyle]} />
                   )}
-                  <View style={[styles.statusDot, { backgroundColor: isMining ? '#4CAF50' : '#FF5733' }]} />
-                  <Text style={styles.statusText}>{isMining ? 'Active' : 'Inactive'}</Text>
+                  <View style={[styles.statusDot, { 
+                    backgroundColor: connectionStatus === 'connected' ? '#4CAF50' : 
+                                   connectionStatus === 'connecting' ? '#FFA500' : '#FF5733' 
+                  }]} />
+                  <Text style={styles.statusText}>
+                    {connectionStatus === 'connected' ? 'Connected' : 
+                     connectionStatus === 'connecting' ? 'Connecting...' : 'Disconnected'}
+                  </Text>
                 </View>
               </View>
               <Switch
                 value={isMining}
                 onValueChange={toggleMining}
+                disabled={isConnecting}
                 trackColor={{ false: 'rgba(126, 53, 37, 0.4)', true: 'rgba(126, 53, 37, 0.8)' }}
                 thumbColor={isMining ? '#FF5733' : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
@@ -89,17 +99,17 @@ export default function MiningScreen() {
               />
             </View>
 
-            {isMining && (
+            {isMining && connectionStatus === 'connected' && (
               <View style={styles.resourcesContainer}>
                 <View style={styles.resourceItem}>
-                  <Ionicons name="hardware-chip-outline" size={18} color="#FF5733" />
-                  <Text style={styles.resourceLabel}>CPU Usage</Text>
-                  <Text style={styles.resourceValue}>{cpuUsage}%</Text>
+                  <Ionicons name="server-outline" size={18} color="#FF5733" />
+                  <Text style={styles.resourceLabel}>Active Server</Text>
+                  <Text style={styles.resourceValue}>{activeServer}</Text>
                 </View>
                 <View style={styles.resourceItem}>
                   <Ionicons name="cloud-upload-outline" size={18} color="#FF5733" />
-                  <Text style={styles.resourceLabel}>Network</Text>
-                  <Text style={styles.resourceValue}>{networkSpeed} Mb/s</Text>
+                  <Text style={styles.resourceLabel}>Status</Text>
+                  <Text style={styles.resourceValue}>Connected</Text>
                 </View>
               </View>
             )}
@@ -107,50 +117,7 @@ export default function MiningScreen() {
         </View>
 
         <View style={styles.sectionTitle}>
-          <Text style={styles.sectionTitleText}>Mining Settings</Text>
-        </View>
-
-        <View style={styles.settingsCard}>
-          <TouchableOpacity style={styles.settingItem}>
-            <View style={styles.settingIconContainer}>
-              <Ionicons name="speedometer-outline" size={24} color="#FF5733" />
-            </View>
-            <View style={styles.settingTextContainer}>
-              <Text style={styles.settingTitle}>Resource Allocation</Text>
-              <Text style={styles.settingDescription}>Set CPU and network usage limits</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#000000F2" />
-          </TouchableOpacity>
-          
-          <View style={styles.divider} />
-          
-          <TouchableOpacity style={styles.settingItem}>
-            <View style={styles.settingIconContainer}>
-              <Ionicons name="time-outline" size={24} color="#FF5733" />
-            </View>
-            <View style={styles.settingTextContainer}>
-              <Text style={styles.settingTitle}>Schedule</Text>
-              <Text style={styles.settingDescription}>Set automatic mining times</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#000000F2" />
-          </TouchableOpacity>
-          
-          <View style={styles.divider} />
-          
-          <TouchableOpacity style={styles.settingItem}>
-            <View style={styles.settingIconContainer}>
-              <Ionicons name="battery-charging-outline" size={24} color="#FF5733" />
-            </View>
-            <View style={styles.settingTextContainer}>
-              <Text style={styles.settingTitle}>Power Settings</Text>
-              <Text style={styles.settingDescription}>Only mine when charging</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#000000F2" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.sectionTitle}>
-          <Text style={styles.sectionTitleText}>Current Task</Text>
+          <Text style={styles.sectionTitleText}>Connection Details</Text>
         </View>
 
         <View style={styles.taskCard}>
@@ -158,31 +125,33 @@ export default function MiningScreen() {
             <>
               <View style={styles.taskHeader}>
                 <Ionicons name="server-outline" size={24} color="#FF5733" />
-                <Text style={styles.taskTitle}>RPC Node Validation</Text>
+                <Text style={styles.taskTitle}>Proxy Connection</Text>
               </View>
               <Text style={styles.taskDescription}>
-                Your node is currently validating and processing transactions for the Solana network.
+                {connectionStatus === 'connecting' ? 
+                  'Establishing connection to proxy servers...' :
+                  connectionStatus === 'connected' ?
+                  'Successfully connected to proxy network. Mining is active.' :
+                  'Disconnected from proxy network.'}
               </Text>
-              <View style={styles.taskStats}>
-                <View style={styles.taskStat}>
-                  <Text style={styles.taskStatLabel}>Transactions</Text>
-                  <Text style={styles.taskStatValue}>248</Text>
+              {connectionStatus === 'connected' && (
+                <View style={styles.taskStats}>
+                  <View style={styles.taskStat}>
+                    <Text style={styles.taskStatLabel}>Active Server</Text>
+                    <Text style={styles.taskStatValue}>{activeServer}</Text>
+                  </View>
+                  <View style={styles.taskStat}>
+                    <Text style={styles.taskStatLabel}>Status</Text>
+                    <Text style={styles.taskStatValue}>Connected</Text>
+                  </View>
                 </View>
-                <View style={styles.taskStat}>
-                  <Text style={styles.taskStatLabel}>Blocks</Text>
-                  <Text style={styles.taskStatValue}>12</Text>
-                </View>
-                <View style={styles.taskStat}>
-                  <Text style={styles.taskStatLabel}>Estimated SOL</Text>
-                  <Text style={styles.taskStatValue}>0.015</Text>
-                </View>
-              </View>
+              )}
             </>
           ) : (
             <View style={styles.notMiningContainer}>
               <Ionicons name="pause-circle-outline" size={48} color="#FF5733" />
               <Text style={styles.notMiningText}>Mining is currently paused</Text>
-              <Text style={styles.notMiningSubtext}>Toggle the switch above to start earning SOL</Text>
+              <Text style={styles.notMiningSubtext}>Toggle the switch above to connect to proxy servers and start mining</Text>
             </View>
           )}
         </View>

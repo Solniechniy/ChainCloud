@@ -1,22 +1,17 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useSolanaWallet } from '@/context/SolanaWalletContext';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function LoginScreen() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { connect } = useSolanaWallet();
 
-  const handleConnectWallet = () => {
+  const handleConnectWallet = async () => {
     setLoading(true);
-    // This is a placeholder for the actual wallet connection logic
-    // The user mentioned they will implement this themselves
-    setTimeout(() => {
-      setLoading(false);
-      router.replace('/(tabs)');
-    }, 1500);
-  };
+    await connect();
+    };
 
   return (
     <LinearGradient
@@ -27,7 +22,7 @@ export default function LoginScreen() {
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>DAN</Text>
+          <Text style={styles.logoText}>SAN</Text>
           <Text style={styles.tagline}>Decentralized Computing Power</Text>
         </View>
 

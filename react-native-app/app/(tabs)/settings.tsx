@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Switch, TouchableOpacity, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useSolanaWallet } from '@/context/SolanaWalletContext';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 
 export default function SettingsScreen() {
+  const { publicKey } = useSolanaWallet();  
   const router = useRouter();
   const [pushNotifications, setPushNotifications] = useState(true);
   const [autoMining, setAutoMining] = useState(true);
@@ -29,8 +31,8 @@ export default function SettingsScreen() {
             <Text style={styles.avatarText}>DU</Text>
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>DAN User</Text>
-            <Text style={styles.walletAddress}>•••••••••4Xpz</Text>
+            <Text style={styles.profileName}>SAN User</Text>
+            <Text style={styles.walletAddress}>{publicKey?.toString().slice(0, 4)}...{publicKey?.toString().slice(-4)}</Text>
           </View>
           <TouchableOpacity style={styles.editButton}>
             <Ionicons name="pencil" size={20} color="#FF5733" />
@@ -127,7 +129,7 @@ export default function SettingsScreen() {
           <TouchableOpacity style={styles.supportRow}>
             <View style={styles.settingLabelContainer}>
               <Ionicons name="information-circle-outline" size={24} color="#FF5733" style={styles.settingIcon} />
-              <Text style={styles.settingLabel}>About DAN</Text>
+              <Text style={styles.settingLabel}>About SAN</Text>
             </View>
             <View style={styles.versionContainer}>
               <Text style={styles.versionText}>v1.0.0</Text>

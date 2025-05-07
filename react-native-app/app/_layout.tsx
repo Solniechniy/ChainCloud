@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { SolanaWalletProvider } from '@/context/SolanaWalletContext';
 import { useFonts } from 'expo-font';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import React, { useEffect } from 'react';
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -18,34 +19,27 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // const [loaded, error] = useFonts({
-  //   'SpaceGrotesk-Medium': require('../assets/fonts/SpaceGrotesk-Medium.ttf'),
-  //   'SpaceGrotesk-Bold': require('../assets/fonts/SpaceGrotesk-Bold.ttf'),
-  //   'SpaceGrotesk-Regular': require('../assets/fonts/SpaceGrotesk-Regular.ttf'),
-  // });
+  const [loaded] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceGrotesk-Regular.ttf'),
+  });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  // useEffect(() => {
-  //   if (error) throw error;
-  // }, [error]);
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
 
-  // useEffect(() => {
-  //   if (loaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded]);
-
-  // if (!loaded) {
-  //   return null;
-  // }
+  if (!loaded) {
+    return null;
+  }
 
   return (
-    <>
+    <SolanaWalletProvider appUrl="https://chaincloud.app/">
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
       </Stack>
-    </>
+    </SolanaWalletProvider>
   );
 }

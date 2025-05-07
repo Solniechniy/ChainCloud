@@ -1,9 +1,11 @@
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useSolanaWallet } from '@/context/SolanaWalletContext';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function DashboardScreen() {
+  const { publicKey } = useSolanaWallet();
   // Sample data - in a real app, this would come from an API
   const nodeStatus = "Active";
   const computePower = 85; // percentage
@@ -33,7 +35,7 @@ export default function DashboardScreen() {
                 <View style={[styles.statusIndicator, { backgroundColor: nodeStatus === "Active" ? '#4CAF50' : '#FF5733' }]} />
                 <Text style={styles.statusText}>{nodeStatus}</Text>
               </View>
-              <Text style={styles.walletAddress}>Wallet: ••••4Xpz</Text>
+              <Text style={styles.walletAddress}>Wallet: {publicKey?.toString().slice(0, 4)}...{publicKey?.toString().slice(-4)}</Text>
             </View>
 
             <View style={styles.statsContainer}>
